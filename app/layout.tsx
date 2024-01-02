@@ -1,13 +1,14 @@
-import '@/styles/globals.css';
-import { Metadata } from 'next';
+import "@/styles/globals.css";
+import { Metadata } from "next";
 
-import { siteConfig } from '@/config/site';
-import { fontSans } from '@/lib/fonts';
-import { cn } from '@/lib/utils';
-import { SiteHeader } from '@/components/custom/layout/site-header';
-import { TailwindIndicator } from '@/components/custom/tailwind-indicator';
-import { ThemeProvider } from '@/components/custom/theme-provider';
-import AuthProvider from '@/providers/auth.provider';
+import { siteConfig } from "@/config/site";
+import { fontSans } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
+import { SiteHeader } from "@/components/custom/layout/site-header";
+import { TailwindIndicator } from "@/components/custom/tailwind-indicator";
+import { ThemeProvider } from "@/components/custom/theme-provider";
+import AuthProvider from "@/providers/auth.provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: {
@@ -20,9 +21,9 @@ export const metadata: Metadata = {
   //   { media: '(prefers-color-scheme: dark)', color: 'black' },
   // ],
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -37,15 +38,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <head />
         <body
           className={cn(
-            'max-h-screen bg-background font-sans antialiased',
+            "max-h-screen bg-background font-sans antialiased",
             fontSans.variable
           )}
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-          >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {/* <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
               <div className="flex h-screen border-collapse overflow-hidden">
@@ -66,6 +63,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </> */}
             {/* <TailwindIndicator /> */}
             <AuthProvider>{children}</AuthProvider>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

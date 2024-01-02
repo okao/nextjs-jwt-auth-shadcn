@@ -1,9 +1,9 @@
-'use client';
-import { useSession } from 'next-auth/react';
-import React, { ReactNode, useLayoutEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import Loader from '@/components/custom/loader';
-import { ScaleLoader } from 'react-spinners';
+"use client";
+import { useSession } from "next-auth/react";
+import React, { ReactNode, useLayoutEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Loader from "@/components/custom/loader";
+import { ScaleLoader } from "react-spinners";
 
 interface Props {
   children: ReactNode;
@@ -15,12 +15,12 @@ const AuthRoutesProvider = ({ children }: Props) => {
   const pathName = usePathname();
 
   useLayoutEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
     }
   }, [status, router, pathName]);
 
-  if (status === 'authenticated') {
+  if (status === "authenticated") {
     //delay the loader for 3 seconds
     // setTimeout(() => {
 

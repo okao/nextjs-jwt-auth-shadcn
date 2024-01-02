@@ -1,6 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from "next";
 
-export { default } from 'next-auth/middleware';
+export { default } from "next-auth/middleware";
+
 export const config = {
-  matcher: ['/andy', '/andy/:path*'],
+  matcher: ["/andy", "/andy/:path*"],
 };
