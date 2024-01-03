@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 
-import { cn } from "@/lib/utils";
-import { Icons } from "@/components/custom/icons";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { cn } from '@/lib/utils';
+import { Icons } from '@/components/custom/icons';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Form,
   FormControl,
@@ -15,44 +15,52 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
+} from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const FormSchema = yup
   .object({
     username: yup
       .string()
-      .required("Username is required.")
-      .min(3, "Username must be at least 3 characters.")
-      .max(20, "Username must be less than 20 characters.")
+      .required('Username is required.')
+      .min(3, 'Username must be at least 3 characters.')
+      .max(20, 'Username must be less than 20 characters.')
       .transform((value) => {
         return value.toLowerCase();
       }),
     password: yup
       .string()
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, {
-        message: (
-          <div>
-            Password must contain at least one uppercase letter, one lowercase
-            letter, one number, and one special character & 8 characters long.
-          </div>
-        ),
-      }),
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+        {
+          message: (
+            <div>
+              Password must contain at least one uppercase letter, one
+              lowercase letter, one number, and one special character
+              & 8 characters long.
+            </div>
+          ),
+        }
+      ),
   })
   .required();
 
 type FormData = yup.InferType<typeof FormSchema>;
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function UserAuthForm({
+  className,
+  ...props
+}: UserAuthFormProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -70,14 +78,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   async function onSubmit(data: any) {
     setIsLoading(true);
 
-    const res = await signIn("credentials", {
+    const res = await signIn('credentials', {
       username: data.username,
       password: data.password,
-      callbackUrl: "/andy",
+      callbackUrl: '/andy',
       redirect: false,
     }).then((response) => {
-      console.log(response);
-
       if (response?.error) {
         setTimeout(() => {
           setIsLoading(false);
@@ -85,8 +91,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       }
 
       if (response?.ok) {
-        console.log("ok", response);
-        const returnUrl: string = response?.url as string | "/andy";
+        console.log('ok', response);
+        const returnUrl: string = response?.url as string | '/andy';
 
         setTimeout(() => {
           setIsLoading(false);
@@ -97,8 +103,26 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     });
   }
 
+  async function onGoogleSignIn() {
+    setIsLoading(true);
+    toast({
+      variant: 'default',
+      title: 'Google Sign In',
+      description: 'Redirecting to Google Sign In...',
+      duration: 5000,
+    });
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+
+    const gUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/google/google`;
+    const localurl = `${process.env.LOCAL_URL}`;
+    window.location.href = `${gUrl}?callbackUrl=${localurl}`;
+  }
+
   return (
-    <div className={cn("grid gap-3 py-6", className)} {...props}>
+    <div className={cn('grid gap-3 py-6', className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4">
           <div className="grid gap-1">
@@ -113,15 +137,17 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="username"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("username")}
+              {...register('username')}
               style={{
-                textTransform: "lowercase",
-                letterSpacing: "0.05em",
-                padding: "1.35em 0.95em",
+                textTransform: 'lowercase',
+                letterSpacing: '0.05em',
+                padding: '1.35em 0.95em',
               }}
             />
             {errors.username && (
-              <span className="text-red-500">{errors.username.message}</span>
+              <span className="text-red-500">
+                {errors.username.message}
+              </span>
             )}
           </div>
           <div className="grid gap-1">
@@ -136,14 +162,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="off"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("password")}
+              {...register('password')}
               style={{
-                letterSpacing: "0.05em",
-                padding: "1.35em 0.95em",
+                letterSpacing: '0.05em',
+                padding: '1.35em 0.95em',
               }}
             />
             {errors.password && (
-              <span className="text-red-500">{errors.password.message}</span>
+              <span className="text-red-500">
+                {errors.password.message}
+              </span>
             )}
           </div>
           <Button disabled={isLoading} type="submit">
@@ -171,26 +199,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           disabled={isLoading}
           className="w-full bg-red-500 hover:bg-red-700 dark:bg-slate-950 dark:hover:bg-slate-900 text-white hover:text-white"
           onClick={() => {
-            setIsLoading(true);
-            toast({
-              variant: "default",
-              title: "Google Sign In",
-              description: "Redirecting to Google Sign In...",
-              duration: 5000,
-            });
-
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 5000);
-
-            router.push("/api/auth/signin/google");
+            onGoogleSignIn();
           }}
         >
           {isLoading ? (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Icons.google className="mr-6 h-6 w-6" />
-          )}{" "}
+          )}{' '}
           Google
         </Button>
         <Button
@@ -203,7 +219,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Icons.apple className="mr-6 h-4 w-4" />
-          )}{" "}
+          )}{' '}
           Apple
         </Button>
       </div>
