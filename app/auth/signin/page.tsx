@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
 // import * as React from 'react';
 
-import { cn } from '@/lib/utils';
-import { Icons } from '@/components/custom/icons';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useState, FormEvent } from 'react';
+import { cn } from "@/lib/utils";
+import { Icons } from "@/components/custom/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState, FormEvent } from "react";
 
 import {
   Form,
@@ -17,15 +17,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 // import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 // import * as z from 'zod';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 // import * as yup from 'yup';
 // import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 // interface UserAuthFormProps
 //   extends React.HTMLAttributes<HTMLDivElement> {}
@@ -125,7 +125,7 @@ import { useToast } from '@/components/ui/use-toast';
 //   );
 // }
 
-import React from 'react';
+import React from "react";
 
 const Login = () => {
   const { toast } = useToast();
@@ -141,13 +141,13 @@ const Login = () => {
     setIsLoading(true);
     const formData = new FormData(event.currentTarget);
 
-    const loginReq = await fetch('/api/signIn', {
-      method: 'POST',
+    const loginReq = await fetch("/api/authz/signin", {
+      method: "POST",
       body: JSON.stringify({
-        username: formData.get('username'),
-        password: formData.get('password'),
+        username: formData.get("username"),
+        password: formData.get("password"),
       }),
-      cache: 'no-cache',
+      cache: "no-cache",
     });
 
     const loginReqData = await loginReq.json();
@@ -157,12 +157,12 @@ const Login = () => {
       console.log(loginReqData);
       setIsLoading(false);
       toast({
-        variant: 'destructive',
-        title: 'Sign In',
+        variant: "destructive",
+        title: "Sign In",
         description:
           loginReqData?.error?.email ||
           loginReqData?.error?.password ||
-          'Something went wrong. Please try again.',
+          "Something went wrong. Please try again.",
         duration: 5000,
       });
       return;
@@ -172,20 +172,20 @@ const Login = () => {
 
     if (loginReq.status === 200) {
       toast({
-        variant: 'default',
-        title: 'Sign In',
-        description: 'Redirecting to Dashboard...',
+        variant: "default",
+        title: "Sign In",
+        description: "Redirecting to Dashboard...",
         duration: 5000,
       });
 
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push("/dashboard");
       }, 5000);
     }
   }
 
   return (
-    <div className={cn('grid gap-3 py-6')}>
+    <div className={cn("grid gap-3 py-6")}>
       <form onSubmit={handleLogin}>
         <div className="grid gap-4">
           <div className="grid gap-1">
@@ -202,9 +202,9 @@ const Login = () => {
               autoCorrect="off"
               disabled={isLoading}
               style={{
-                textTransform: 'lowercase',
-                letterSpacing: '0.05em',
-                padding: '1.35em 0.95em',
+                textTransform: "lowercase",
+                letterSpacing: "0.05em",
+                padding: "1.35em 0.95em",
               }}
             />
           </div>
@@ -222,8 +222,8 @@ const Login = () => {
               autoCorrect="off"
               disabled={isLoading}
               style={{
-                letterSpacing: '0.05em',
-                padding: '1.35em 0.95em',
+                letterSpacing: "0.05em",
+                padding: "1.35em 0.95em",
               }}
             />
           </div>
@@ -259,7 +259,7 @@ const Login = () => {
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Icons.google className="mr-6 h-6 w-6" />
-          )}{' '}
+          )}{" "}
           Google
         </Button>
         <Button
@@ -272,7 +272,7 @@ const Login = () => {
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Icons.apple className="mr-6 h-4 w-4" />
-          )}{' '}
+          )}{" "}
           Apple
         </Button>
       </div>

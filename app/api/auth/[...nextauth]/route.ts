@@ -1,37 +1,36 @@
-import axios from '@/lib/axios';
-import NextAuth, { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
+import axios from "@/lib/axios";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       //name of the provider
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
         username: {
-          label: 'Username',
-          type: 'text',
-          placeholder: 'jsmith',
+          label: "Username",
+          type: "text",
+          placeholder: "jsmith",
         },
-        password: { label: 'Password', type: 'password' },
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials, req) => {
         try {
-          if (!credentials?.username || !credentials?.password)
-            return null;
+          if (!credentials?.username || !credentials?.password) return null;
 
           const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/email/login`,
             {
-              method: 'POST',
+              method: "POST",
               body: JSON.stringify({
                 email: credentials.username,
                 password: credentials.password,
               }),
-              headers: { 'Content-Type': 'application/json' },
+              headers: { "Content-Type": "application/json" },
             }
           );
 
@@ -47,21 +46,21 @@ export const authOptions: NextAuthOptions = {
 
           //set the refresh token in the cookie
           cookies().set({
-            name: 'andy_rft',
+            name: "andy_rft",
             value: user.refreshToken,
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            path: '/',
-            sameSite: 'lax',
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            sameSite: "lax",
             domain:
-              process.env.NODE_ENV === 'production'
+              process.env.NODE_ENV === "production"
                 ? process.env.NODE_PUBLIC_DOMAIN
-                : '',
+                : "",
           });
 
           return user;
         } catch (err) {
-          console.log('err', err);
+          console.log("err", err);
           return null;
         }
       },
@@ -81,20 +80,20 @@ export const authOptions: NextAuthOptions = {
   // },
 
   pages: {
-    signIn: '/auth/login',
-    signOut: '/auth/logout',
-    newUser: '/auth/register', // If set, new users will be directed here on first sign in
+    signIn: "/auth/login",
+    signOut: "/auth/logout",
+    newUser: "/auth/register", // If set, new users will be directed here on first sign in
     // error: '/auth/login',
     // verifyRequest: '/auth/verify-request',
   },
 
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider === 'credentials' && user) {
+      if (account?.provider === "credentials" && user) {
         return true;
       }
 
-      if (account?.provider === 'google') {
+      if (account?.provider === "google") {
         console.log({ user, account, profile });
       }
 
@@ -120,7 +119,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (Date.now() < parseInt(token?.tokenExpiresIn)) {
-        console.log('tokenNotExpired', token.tokenExpiresIn);
+        console.log("tokenNotExpired", token.tokenExpiresIn);
         // console.log('Date.now()', Date.now());
         return token;
       }
@@ -196,13 +195,13 @@ export const authOptions: NextAuthOptions = {
 
 async function refreshAccessToken(token: any) {
   try {
-    console.log('RefreshToken Called', token);
+    console.log("RefreshToken Called", token);
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/refresh`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userId: token.user.id,
@@ -215,11 +214,11 @@ async function refreshAccessToken(token: any) {
 
     return user;
   } catch (err) {
-    console.log('err', err);
+    console.log("err", err);
 
     return {
       ...token,
-      error: 'RefreshAccessTokenError',
+      error: "RefreshAccessTokenError",
     };
   }
 }
