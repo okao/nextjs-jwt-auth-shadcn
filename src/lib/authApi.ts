@@ -1,23 +1,25 @@
-"use server";
-import { fetchApi } from "@/lib/http";
-import { NextResponse } from "next/server";
-import { setCookie, hasCookie, getCookie, deleteCookie } from "cookies-next";
-import { cookies } from "next/headers";
-import { HttpStatusCode } from "axios";
+'use server';
+import { fetchApi } from '@/lib/http';
+import { NextResponse } from 'next/server';
+import {
+  setCookie,
+  hasCookie,
+  getCookie,
+  deleteCookie,
+} from 'cookies-next';
+import { cookies } from 'next/headers';
+import { HttpStatusCode } from 'axios';
 
 export const authApi = async (url: string, options: any) => {
   //get the cookie
-  const auth_cookie = hasCookie("andy_xcess", {
+  const auth_cookie = hasCookie('andy_xcess', {
     cookies,
   });
 
   //get the refresh cookie
-  const refresh_cookie = hasCookie("andy_xcess_refresh", {
+  const refresh_cookie = hasCookie('andy_xcess_refresh', {
     cookies,
   });
-
-  console.log("auth_cookie", auth_cookie);
-  console.log("refresh_cookie", refresh_cookie);
 
   //if there is no cookies redirect to login page
   if (!auth_cookie && !refresh_cookie) {
@@ -26,37 +28,35 @@ export const authApi = async (url: string, options: any) => {
   }
 
   //get the token values
-  const auth_cookie_value = getCookie("andy_xcess", {
+  const auth_cookie_value = getCookie('andy_xcess', {
     cookies,
   });
 
   //get the refresh token values
-  const refresh_cookie_value = getCookie("andy_xcess_refresh", {
+  const refresh_cookie_value = getCookie('andy_xcess_refresh', {
     cookies,
   });
 
   if (!auth_cookie && refresh_cookie) {
     //call refresh token
-    const { data: refreshToken, status: refreshStatus } = await fetchApi(
-      `auth/refresh`,
-      {
-        method: "POST",
+    const { data: refreshToken, status: refreshStatus } =
+      await fetchApi(`auth/refresh`, {
+        method: 'POST',
         ...options,
         headers: {
           ...options.headers,
           Authorization: `Bearer ${refresh_cookie_value}`,
         },
-      }
-    );
+      });
 
     //if refresh token is not ok
     if (![201, 200].includes(refreshStatus)) {
       //remove the cookie
-      deleteCookie("andy_xcess", {
+      deleteCookie('andy_xcess', {
         cookies,
       });
 
-      deleteCookie("andy_xcess_refresh", {
+      deleteCookie('andy_xcess_refresh', {
         cookies,
       });
 
@@ -64,21 +64,18 @@ export const authApi = async (url: string, options: any) => {
       return { data: {}, status: HttpStatusCode.Unauthorized } || {};
     }
 
-    //if refresh token is ok
-    //set the new cookie
-
-    setCookie("andy_xcess", refreshToken?.token, {
+    setCookie('andy_xcess', refreshToken?.token, {
       cookies,
       maxAge: refreshToken?.tokenExpires,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === 'production',
     });
 
-    setCookie("andy_xcess_refresh", refreshToken?.refreshToken, {
+    setCookie('andy_xcess_refresh', refreshToken?.refreshToken, {
       cookies,
       maxAge: refreshToken?.tokenExpires + 60 * 15, // add 15 minutes to the tokenExpiresSeconds
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === 'production',
     });
   }
 
@@ -93,21 +90,17 @@ export const authApi = async (url: string, options: any) => {
     Authorization: `Bearer ${auth_cookie_value}`,
   };
 
-  console.log("options.headers", options.headers);
-
   //set the token in the header
   const { data, status } = await fetchApi(url, options);
-
-  console.log("data", data, "status", status);
 
   //if the status is unauthorized
   if (![200, 201, 202, 203, 204].includes(status)) {
     //remove the cookie
-    deleteCookie("andy_xcess", {
+    deleteCookie('andy_xcess', {
       cookies,
     });
 
-    deleteCookie("andy_xcess_refresh", {
+    deleteCookie('andy_xcess_refresh', {
       cookies,
     });
 

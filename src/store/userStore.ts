@@ -1,15 +1,33 @@
-import { create } from "zustand";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
-type Store = {
-  user: {};
-  setUser: (user: any) => void;
-  getUser: () => void;
-};
+interface User {
+  id: number;
+  email: string;
+  provider: string;
+  socialId?: string;
+  firstName?: string;
+  lastName?: string;
+  photo?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+  status?: {
+    id?: number;
+    name?: string;
+  };
+}
 
-const useUserStore = create<Store>((set, get) => ({
-  user: {},
+interface GenerationState {
+  user: User;
+  setUser: (user: User) => void;
+  clearUser: () => void;
+  getUser: () => User;
+}
+
+export const useUserStore: any = create<GenerationState>((set) => ({
+  user: {} as User,
   setUser: (user) => set({ user }),
-  getUser: () => get().user,
+  clearUser: () => set({ user: {} as User }),
+  getUser: () => useUserStore.getState().user,
 }));
-
-export default useUserStore;

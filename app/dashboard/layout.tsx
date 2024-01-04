@@ -1,8 +1,8 @@
-import React from "react";
-import { SiteHeader } from "@/components/custom/layout/site-header";
-import { SiteHeaderNew } from "@/components/custom/layout/site-header-new";
-import Sidebar from "@/components/custom/layout/sidebar";
-import AuthRoutesProvider from "./AuthProvider";
+import React from 'react';
+import { SiteHeader } from '@/components/custom/layout/site-header';
+import { SiteHeaderNew } from '@/components/custom/layout/site-header-new';
+import Sidebar from '@/components/custom/layout/sidebar';
+import AuthRoutesProvider from './AuthProvider';
 
 interface RootLayoutProps {
   children: React.ReactNode;
