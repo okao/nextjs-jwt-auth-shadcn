@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { SiteHeader } from '@/components/custom/layout/site-header';
 import { SiteHeaderNew } from '@/components/custom/layout/site-header-new';
